@@ -23,14 +23,14 @@ if(x$type=="CART"){
   cat("\nCall:\n", deparse(x$call), "\n\n")
   cat("  Classifier: ", x$type, "\n",sep="")
   #cat("  Number of trees: ", x$ntree, "\n",sep="")
-  if(is.numeric(x$do.trace) &&  (x$maxiter < x$niteration)) {cat("  Number of iterations reached: ", x$maxiter, "\n",sep="")} else {cat("  Number of iterations: ", x$nforest, "\n",sep="")}
+  if(is.numeric(x$do.trace) &&  (x$maxiter < x$nforest)) {cat("  Number of iterations reached: ", x$maxiter, "\n",sep="")} else {cat("  Number of iterations: ", x$nforest, "\n",sep="")}
   
   cat("  No. of variables tried at each iteration: ", x$mtry, "\n\n", sep="")
   if(x$weight==FALSE ) {cat("  No weighted procedure \n")} else {cat("  Weighted procedure \n")}
 
 
   if(is.numeric(x$do.trace)) cat("  Stopping criterion was tested every ", x$do.trace," iterations \n",sep="") 
-  if((is.numeric(x$do.trace)) && (x$maxiter < x$niteration)) cat("  The algorithm stopped when the first ", x$nstable," weighted variables were the same \n",sep="")
+  if((is.numeric(x$do.trace)) && (x$maxiter < x$nforest)) cat("  The algorithm stopped when the first ", x$nstable," weighted variables were the same \n",sep="")
 } 
 
 
@@ -38,14 +38,14 @@ if(x$type=="SVM"){
   cat("\nCall:\n", deparse(x$call), "\n\n")
   cat("  Classifier: ", x$type, "\n",sep="")
   #cat("  Number of trees: ", x$ntree, "\n",sep="")
-  if(is.numeric(x$do.trace) &&  (x$maxiter < x$niteration)) {cat("  Number of iterations reached: ", x$maxiter, "\n",sep="")} else {cat("  Number of iterations: ", x$niteration, "\n",sep="")}
+  if(is.numeric(x$do.trace) &&  (x$maxiter < x$nsvm)) {cat("  Number of iterations reached: ", x$maxiter, "\n",sep="")} else {cat("  Number of iterations: ", x$nsvm, "\n",sep="")}
   
   cat("  No. of variables tried at each iteration: ", x$mtry, "\n\n", sep="")
   if(x$weight==FALSE ) {cat("  No weighted procedure \n")} else {cat("  Weighted procedure \n")}
 
 
   if(is.numeric(x$do.trace)) cat("  Stopping criterion was tested every ", x$do.trace," iterations \n",sep="") 
-  if((is.numeric(x$do.trace)) && (x$maxiter < x$niteration)) cat("  The algorithm stopped when the first ", x$nstable," weighted variables were the same \n",sep="")
+  if((is.numeric(x$do.trace)) && (x$maxiter < x$nsvm)) cat("  The algorithm stopped when the first ", x$nstable," weighted variables were the same \n",sep="")
 }
 
 }

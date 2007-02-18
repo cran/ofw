@@ -72,7 +72,7 @@ Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr}}
 #learn.boot.cart <- learn(srbct, as.factor(class), type="CART", ntree=50, nforest=100, mtry=5, Bsample=3)
 #eval.boot.cart <- evaluate(learn.boot.cart, ntreeTest=50, maxvar=10)
 #plot(eval.boot.cart$error, type="l")
-#learn.boot.svm <- learn(srbct, as.factor(class),type="SVM", niteration=500, mtry=5, Bsample=3)
+#learn.boot.svm <- learn(srbct, as.factor(class),type="SVM", nsvm=500, mtry=5, Bsample=3)
 #eval.boot.svm <- evaluate(learn.boot.svm, maxvar=10)
 #plot(eval.boot.svm$error, type="l")
 

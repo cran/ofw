@@ -16,6 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+"evaluateSVM" <- function(obj, ...) UseMethod("evaluateSVM")
+
 "evaluateSVM.learnSVM"<-
   function(obj,
            maxvar=15,
@@ -26,7 +28,7 @@
     y=obj$y
     nsample=obj$nsample
     nvariable=obj$nvariable
-    niteration=obj$niteration
+    nsvm=obj$nsvm
     Bsample=obj$Bsample
    
 
@@ -122,10 +124,12 @@ if (weight==T) {
 	err.test=vector(length=Bsample, mode="numeric")
 }
 
-for (ngene in 1:maxvar)
-{
-#print(ngene)
+    ##BIG LOOP ON MAXvar
+cat("\n  Calculating e632+ for each of the ",maxvar," variables \n")
+for(ngene in 1:maxvar){
+cat("\n  variable :",ngene,"\n") 
 
+    ##LOOP on the bootstrap samples
 for (boot in 1:Bsample)
 {
 #pr chaque echantillon bootstrap on travaille sur training et test set boot
@@ -206,7 +210,6 @@ r <- (one - resubst)/(gamma - resubst)
 	out <-list(
 	   maxvar=maxvar,
 	   weight.eval=weight,
-	   #niteration=niteration,
   	   matTrain=obj$matTrain,
 	   matProb=obj$matProb,
 	   error=error.boot,

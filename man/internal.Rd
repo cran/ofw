@@ -19,11 +19,11 @@
 
 %\usage{
 %\method{learnCART}{default}(x, y, ntree=50, nforest=10, mtry=5, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5, ...)
-%\method{learnSVM}{default}(x, y, niteration=1000, mtry=10, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5,...)
+%\method{learnSVM}{default}(x, y, nsvm=1000, mtry=10, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5,...)
 %\method{evaluateCART}{learnCART}(obj, maxvar=15, nvar=obj$nclass+1, ntreeTest=100, weight=FALSE, ...)
 %\method{evaluateSVM}{learnSVM}(obj, maxvar=15, weight=F, ...)
 %\method{ofwCART}{default}(x, y, ntree=50, nforest=100, mtry=5, do.trace=FALSE, nstable=25, keep.inbag=FALSE, keep.forest=TRUE, weight=FALSE, ...)
-%\method{ofwSVM}{default}(x, y, niteration=100, mtry=5, do.trace=FALSE, nstable=25, weight=FALSE, ...) 
+%\method{ofwSVM}{default}(x, y, nsvm=100, mtry=5, do.trace=FALSE, nstable=25, weight=FALSE, ...) 
 %}
 	    
 	   

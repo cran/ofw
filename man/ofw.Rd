@@ -11,7 +11,7 @@
   \code{ofw} implements the Optimal Feature Weighting stochastic algorithm for multiclass classification with Classification And Regression Trees (CART) or Support Vector Machine (SVM) as a classifier, in the context of continuous variables.
 }
 \usage{
-\method{ofw}{default}(x,y,type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, niteration= if(type=="SVM") 100 else NULL, mtry=5, do.trace=FALSE, nstable=25, keep.inbag=if(type=="CART")  FALSE else NULL, keep.forest=if(type=="CART") TRUE else NULL, weight=FALSE, ...)
+\method{ofw}{default}(x,y,type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 100 else NULL, mtry=5, do.trace=FALSE, nstable=25, keep.inbag=if(type=="CART")  FALSE else NULL, keep.forest=if(type=="CART") TRUE else NULL, weight=FALSE, ...)
 \method{print}{ofw}(x, ...)
 }
         
@@ -21,10 +21,10 @@
   \item{type}{Classifier used: either \code{CART} or \code{SVM}}
   \item{ntree}{If \code{CART}, number of trees to grow for each iteration (trees aggregation).}
   \item{nforest}{If \code{CART}, number of iterations to run. This should not be set to too small a number, to ensure the convergence of the algorithm.}
-  \item{niteration}{If \code{SVM}, number of iterations to run. This should be set to a very large number, to ensure the convergence of the algorithm.}
+  \item{nsvm}{If \code{SVM}, number of iterations to run. This should be set to a very large number, to ensure the convergence of the algorithm.}
   \item{mtry}{Number of variables sampled according to the weight vector P as candidates for each tree or SVM. This should be small enough to ensure stable results of the algorithm.}
   \item{do.trace}{If set to some integer, then current iteration is printed for every \code{do.trace} iterations and the number of the first stable variables is output.}
-  \item{nstable}{Need \code{do.trace} set to some integer. Stopping criterion before \code{nforest} or \code{niterations} iterations are reached: if the \code{nstable} first weighted variables are the same after \code{do.stable} iterations, then stop. }
+  \item{nstable}{Need \code{do.trace} set to some integer. Stopping criterion before \code{nforest} or \code{nsvms} iterations are reached: if the \code{nstable} first weighted variables are the same after \code{do.stable} iterations, then stop. }
   \item{keep.inbag}{If \code{CART}, should an \code{n} by \code{ntree} matrix be returned that keeps track of which samples are ``in-bag'' in which trees (and how many times as it is a sampling with replacement) in the last forest.}
   \item{keep.forest}{If \code{CART}, and if set to \code{TRUE}, the last forest (or last iteration) will be retained in the output object and the \code{getTree} function can be used to see how the trees were constructed.}
   \item{weight}{Should the weighting procedure be applied ?}
@@ -45,8 +45,8 @@
   \item{prob}{Probability distribution vector P or weighting vector of length the total number of variables. }
   \item{ntree}{If \code{CART}, number of trees grown for each iteration.}
   \item{nforest}{If \code{CART}, number of iterations asked in the procedure.}
-  \item{niteration}{If \code{SVM}, number of iterations asked in the procedure.}
-  \item{maxiter}{Actual number of iterations performed (different than \code{nforest} or \code{niteration} if \code{nstable} variables are obtained after \code{do.trace} steps).}
+  \item{nsvm}{If \code{SVM}, number of iterations asked in the procedure.}
+  \item{maxiter}{Actual number of iterations performed (different than \code{nforest} or \code{nsvm} if \code{nstable} variables are obtained after \code{do.trace} steps).}
   \item{mtry}{Number of predictors sampled with P for each tree for each iteration.}
   \item{do.trace}{The number of iteration is printed every \code{do.trace} and the stopping criterion is tested.}
   \item{nstable}{Number of stable variables obtained if \code{maxiter < nforest}.}
@@ -97,10 +97,17 @@ learn.cart$prob
 ## Look if the internal mean error is decreasing w.r.t the number of iterations:
 plot(learn.cart$mean.error, type="l")
 ##ofwSVM
-learn.svm <- ofwSVM(srbct, as.factor(class),type="SVM", niteration=500, mtry=5)
+learn.svm <- ofw(srbct, as.factor(class),type="SVM", nsvm=500, mtry=5)
 print(learn.svm)
 ## Look at variable importance:
 learn.svm$prob
+## to use the do.trace options:
+#learn.cart <- ofw(srbct, as.factor(class),type="CART", ntree=100, nforest=200, mtry=5, do.trace=10, nstable=5)
+#learn.svm <- ofw(srbct, as.factor(class),type="SVM", nsvm=500, mtry=5, do.trace=50, nstable=5)
+#learn.cart
+#learn.svm
+
+
 detach(srbct)
 }
 \keyword{classif}% at least one, from doc/KEYWORDS

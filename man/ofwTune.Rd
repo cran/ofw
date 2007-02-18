@@ -5,11 +5,11 @@
 
 \title{Tuning the parameters for ofwCART or ofwSVM}
 \description{
-  \code{ofwTune} helps to tune the main parameters: \code{mtry}, \code{nforest} and \code{ntree} for ofwCART or \code{mtry} and \code{niteration} for ofwSVM.}
+  \code{ofwTune} helps to tune the main parameters: \code{mtry}, \code{nforest} and \code{ntree} for ofwCART or \code{mtry} and \code{nsvm} for ofwSVM.}
 }
 
 \usage{
-\method{ofwTune}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, niteration= if(type=="SVM") 500 else NULL, mtry.test=seq(5,15,length=3), do.trace=FALSE, nstable=10, weight=FALSE, ...)
+\method{ofwTune}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 500 else NULL, mtry.test=seq(5,15,length=3), do.trace=FALSE, nstable=10, weight=FALSE, ...)
 }
         
 \arguments{
@@ -18,10 +18,10 @@
   \item{type}{The version of OFW to perform.}
   \item{ntree}{Number of trees to grow for each iteration (trees aggregation) in case ofwCART is chosen.}
   \item{nforest}{Total number of iterations to run if ofwCART.}
-  \item{niteration}{Total number of iterations to run if ofwSVM.}
+  \item{nsvm}{Total number of iterations to run if ofwSVM.}
   \item{mtry.test}{Vector defining the number of variables sampled according to the weight vector P to be tested. By default the vector is defined as 'seq(5,15,length=3)'.}
   \item{do.trace}{If set to some integer, then current iteration is printed for every \code{do.trace} iterations and the number of the first stable variables is output.}
-  \item{nstable}{Need \code{do.trace} set to some integer. Stopping criterion before \code{nforest} or \code{niteration} iterations are reached: if the \code{nstable} first weighted variables are the same after \code{do.stable} iterations, then stop. }
+  \item{nstable}{Need \code{do.trace} set to some integer. Stopping criterion before \code{nforest} or \code{nsvm} iterations are reached: if the \code{nstable} first weighted variables are the same after \code{do.stable} iterations, then stop. }
   \item{weight}{Should the weighting procedure be applied ?}
   \item{...}{not used currently.}
 }
@@ -71,8 +71,14 @@ A list with the following components:
 #attach(srbct)
 #tune.cart <- ofwTune(srbct, as.factor(class), type="CART", ntree=50, nforest=200, mtry.test=seq(5,10,length=2))
 #tune.cart
-#tune.svm <- ofwTune(srbct, as.factor(class), type="SVM", niteration=500, mtry.test=seq(5,10,length=2))
+#tune.svm <- ofwTune(srbct, as.factor(class), type="SVM", nsvm=500, mtry.test=seq(5,10,length=2))
 #tune.svm
+##Using do.trace options 
+#tune.cart <- ofwTune(srbct, as.factor(class), type="CART", ntree=50, nforest=200, mtry.test=seq(5,10,length=2), do.trace=50, nstable=5)
+#tune.cart
+#tune.svm <- ofwTune(srbct, as.factor(class), type="SVM", nsvm=500, mtry.test=seq(5,10,length=2), do.trace=100, nstable=5)
+#tune.svm
+
 #detach(srbct)
 }
 \keyword{classif}% at least one, from doc/KEYWORDS

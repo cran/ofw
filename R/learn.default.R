@@ -16,13 +16,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+"learn" <- function(x, ...) UseMethod("learn")
+
 "learn.default"<-
    function(x, 
 	    y,
 	    type="CART",
 	    ntree= if(type=="CART") 50 else NULL, 
 	    nforest= if(type=="CART") 100 else NULL,
-	    niteration= if(type=="SVM") 20000 else NULL,
+	    nsvm= if(type=="SVM") 20000 else NULL,
             mtry=5, 
 	    do.trace=FALSE,
             nstable=50,
@@ -51,10 +53,10 @@ if (type=="CART"){
 }
             
 #pour svm:
-#function(x, y, niteration=1000, mtry=10, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5)
+#function(x, y, nsvm=1000, mtry=10, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5)
 if (type=="SVM"){
 
-	learn.svm=learnSVM(x, y, niteration=niteration, mtry=mtry, do.trace=do.trace, nstable=nstable, weight=weight, Bsample=Bsample)
+	learn.svm=learnSVM(x, y, nsvm=nsvm, mtry=mtry, do.trace=do.trace, nstable=nstable, weight=weight, Bsample=Bsample)
 
 	out <-list(x=x,
                    y=y,
@@ -63,7 +65,7 @@ if (type=="SVM"){
 	           nclass=nlevels(y),
                    nvariable=learn.svm$nvariable,
                    weight.learn=weight,
-		   niteration=learn.svm$niteration,
+		   nsvm=learn.svm$nsvm,
 		   Bsample=Bsample,
   		   matTrain=learn.svm$matTrain,
 		   matProb=learn.svm$matProb, 

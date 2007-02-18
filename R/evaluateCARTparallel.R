@@ -39,8 +39,8 @@
    	 if (any(table(y) == 0)) stop("Can't have empty classes in y.")
     	
 
-    if(nrow(matTrain) != nsample)  stop(" wrong matrix matTrain (the number of row is not the same as the number of samples")
-    if(nrow(matProb) != nvariable) stop(" wrong matrix matProb (the number of row is not the same as the number of variables")
+    if(nrow(matTrain) != nsample)  stop(" wrong matrix matTrain: the number of row is not the same as the number of samples")
+    if(nrow(matProb) != nvariable) stop(" wrong matrix matProb: the number of row is not the same as the number of variables")
 	if(ncol(matTrain)!= ncol(matProb)) stop(" matTrain and matProb should have the same number of columns")
     if(maxvar >=nvariable) stop("maxvar shoud not be greater than the number of variables")
      if(nvar >=nvariable) stop("nvar shoud not be greater than the number of variables")

@@ -16,11 +16,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+
+"ofwSVM" <-function(x, ...)  UseMethod("ofwSVM")
+
 "ofwSVM.default" <-
     function(
 	     x, 
 	     y, 
-	     niteration=100,
+	     nsvm=100,
              mtry=5, 
 	     do.trace=FALSE,
 	     nstable=25,
@@ -137,14 +140,14 @@ if(weight==T){
 P = c(rep(1/nvariable, nvariable))	 #initialisation : P est un vecteur uniforme
 names(P)=colnames(x)
 W= vector(length=mtry)                     #sous ensemble W de variables de longeur mtry
-erreur.it= vector(mode="numeric", length=niteration)  #erreur moyenne de chaque iteration
+erreur.it= vector(mode="numeric", length=nsvm)  #erreur moyenne de chaque iteration
 G.final=vector(length=length(P), mode="numeric")   #gradient de l energie
 
 j=1
 iter = 1
 iter.stop=0
 
-while(iter <=niteration)
+while(iter <=nsvm)
 {
 # Call the function in all the children, and collect the results
 if(weight==T){res.svm<-svmlearnWeight(x=x, y=y,P=P, lw=mtry, vectWeight=classWeight)} else {res.svm<-svmlearn(x=x, y=y,P=P, lw=mtry)}
@@ -164,19 +167,18 @@ if (iter==(j*do.trace))
 {
 
 if (j==1) {l1=names(sort(P, decreasing=T)[1:nstable])} else{l2=names(sort(P, decreasing=T)[1:nstable])}
-cat("\n","iteration", iter, "     ")
+cat("\n", "iteration", iter, "     " )
 if (j >1) cat("stable variables: ", length(intersect(l1, l2)), " ")
-if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=niteration;} else {l1=l2}}
+if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=nsvm;} else {l1=l2}}
 j=j+1
 } 
 }
 
 iter=iter+1
-}  #end for niteration
+}  #end for nsvm
 cat("\n")
-#if(!do.trace) cat("iteration", iter-1, "\n")
 
-if(iter.stop != 0) {maxiter=iter.stop} else {maxiter=niteration}
+if(iter.stop != 0) {maxiter=iter.stop} else {maxiter=nsvm}
 
 	cl <- match.call()
         cl[[1]] <- as.name("ofwSVM")
@@ -185,7 +187,7 @@ out <- list(
 		type = "classification", 
 		classes = levels(y),
 	    	prob=P,
-		niteration=niteration,
+		nsvm=nsvm,
 		maxiter=maxiter, 
 		mtry = mtry,
 		do.trace=do.trace,

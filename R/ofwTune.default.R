@@ -16,6 +16,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+"ofwTune" <- function(x, ...) UseMethod("ofwTune")
+  
+  
 "ofwTune.default" <-
     function(
 	     x, 
@@ -23,9 +26,8 @@
 	     type="CART",
 	     ntree= if(type=="CART") 50 else NULL, 
 	     nforest= if(type=="CART") 100 else NULL,
-	     niteration= if(type=="SVM") 500 else NULL,
+	     nsvm= if(type=="SVM") 500 else NULL,
              mtry.test=seq(5,15,length=3), 
-             #mtryTest=15,
 	     do.trace=FALSE,
 	     nstable=10,
              weight=FALSE, ...) {
@@ -43,10 +45,10 @@
 		for(i in 1:length(mtry.test)){
 		mtry=mtry.test[i]
 		cat("Computing ofwCART1 and ofwCART2 for mtry=", mtry, "\n",sep="")
-		#print("ofwCART1")
+		cat("ofwCART1", "\n")
 		ofwCART1=ofwCART(x, y, ntree=ntree, nforest=nforest, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[1,i]=ofwCART1$maxiter
-		#print("ofwCART2")
+		cat("ofwCART2","\n")
 		ofwCART2=ofwCART(x, y,  ntree=ntree, nforest=nforest, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[2,i]=ofwCART2$maxiter
 		l=length(intersect(names(sort(ofwCART1$prob, decreasing=T)[1:nstable]),names(sort(ofwCART2$prob, decreasing=T)[1:nstable])))
@@ -59,11 +61,11 @@
 		for(i in 1:length(mtry.test)){
 		mtry=mtry.test[i]
 		cat("Computing ofwSVM1 and ofwSVM2 for mtry=", mtry, "\n",sep="")
-		#print("ofwSVM1")
-		ofwSVM1=ofwSVM(x, y, niteration=niteration, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
+		cat("ofwSVM1", "\n")
+		ofwSVM1=ofwSVM(x, y, nsvm=nsvm, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[1,i]=ofwSVM1$maxiter
-		#print("ofwSVM2")
-		ofwSVM2=ofwSVM(x, y, niteration=niteration, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
+		cat("ofwSVM2", "\n")
+		ofwSVM2=ofwSVM(x, y, nsvm=nsvm, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[2,i]=ofwSVM2$maxiter
 		l=length(intersect(names(sort(ofwSVM1$prob, decreasing=T)[1:nstable]),names(sort(ofwSVM2$prob, decreasing=T)[1:nstable])))
 		param[,i]=c(mtry, l)
@@ -83,7 +85,7 @@
 		mtry.test=mtry.test,
 		param=param,
 		itermax=iter.max,
-		iteration= if (is.null(nforest)) niteration else nforest,
+		iteration= if (is.null(nforest)) nsvm else nforest,
 		weight=weight)
 	class(out) <- "ofwTune"
 	return(out)

@@ -9,7 +9,7 @@
 }
 
 \usage{
-\method{learn}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, niteration= if(type=="SVM") 20000 else NULL, mtry=5, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5, ...)
+\method{learn}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 20000 else NULL, mtry=5, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5, ...)
 }
         
 \arguments{
@@ -18,7 +18,7 @@
   \item{type}{Classifier used: either \code{CART} or \code{SVM}.}
   \item{ntree}{If \code{CART}, number of trees to grow for each iteration (trees aggregation).}
   \item{nforest}{If \code{CART}, number of iterations to run. This should not be set to too small a number, to ensure the convergence of the algorithm.}
-  \item{niteration}{If \code{SVM}, number of iterations to run. This should be set to a very large number, to ensure the convergence of the algorithm.}
+  \item{nsvm}{If \code{SVM}, number of iterations to run. This should be set to a very large number, to ensure the convergence of the algorithm.}
   \item{mtry}{Number of variables sampled according to the weight vector P as candidates for each tree or SVM. This should be small enough to ensure stable results of the algorithm.}
   \item{do.trace}{If set to some integer, then current iteration is printed for every \code{do.trace} iterations and the number of the first stable variables is output.}
   \item{nstable}{Need \code{do.trace} set to some integer. Stopping criterion before \code{nforest} iterations are reached: if the \code{nstable} first weighted variables are the same after \code{do.stable} iterations, then stop. }
@@ -72,7 +72,7 @@ Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr}}
 #data(srbct)
 #attach(srbct)
 #learn.boot.cart <- learnCART(srbct, as.factor(class),type="CART", ntree=50, nforest=200, mtry=5, Bsample=3)
-#learn.boot.svm <- learnSVM(srbct, as.factor(class), type="SVM", niteration=500, mtry=5, Bsample=3)
+#learn.boot.svm <- learnSVM(srbct, as.factor(class), type="SVM", nsvm=500, mtry=5, Bsample=3)
 #detach(srbct)
 }
 \keyword{classif}% at least one, from doc/KEYWORDS

@@ -16,13 +16,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+"ofw" <- function(x, ...) UseMethod("ofw")
+
 "ofw.default"<-
    function(    x,
    	    	y,
    	    	type="CART",
    	    	ntree= if(type=="CART") 50 else NULL,
    	    	nforest= if(type=="CART") 100 else NULL,
-   	    	niteration= if(type=="SVM") 100 else NULL,
+   	    	nsvm= if(type=="SVM") 100 else NULL,
    	    	mtry=5,
    	    	do.trace=FALSE,
    	    	nstable=25,
@@ -59,10 +61,10 @@ if (type=="CART"){
 }
             
 #pour svm:
-#function(x, y, niteration=100, mtry=5, do.trace=FALSE, nstable=25, weight=FALSE)
+#function(x, y, nsvm=100, mtry=5, do.trace=FALSE, nstable=25, weight=FALSE)
 if (type=="SVM"){
 
-	ofw.svm=ofwSVM(x, y, niteration=niteration, mtry=mtry, do.trace=do.trace, nstable=nstable, weight=weight)
+	ofw.svm=ofwSVM(x, y, nsvm=nsvm, mtry=mtry, do.trace=do.trace, nstable=nstable, weight=weight)
 	
 	cl <- match.call()
         cl[[1]] <- as.name("ofw")
@@ -72,7 +74,7 @@ if (type=="SVM"){
 		type=type,
 		classes = levels(y),
 	    	prob=ofw.svm$prob,
-		niteration=niteration,
+		nsvm=nsvm,
 		maxiter=ofw.svm$maxiter, 
 		mtry = mtry,
 		do.trace=do.trace,

@@ -16,10 +16,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+"learnSVM" <- function(x, ...) UseMethod("learnSVM")
+
 "learnSVM.default" <-
    function(x, 
 	    y, 
-	    niteration=1000, 
+	    nsvm=1000, 
 	    mtry=10, 
 	    do.trace=FALSE,
             nstable=50,
@@ -163,14 +165,14 @@ yprim=y[train]
 
 P = c(rep(1/nvariable, nvariable))	 #initialisation : P est un vecteur uniforme
 W= vector(length=mtry)  #sous ensemble W de variables de longeur mtry
-erreur.it= vector(mode="numeric", length=niteration)  #erreur moyenne de chaque iteration
+erreur.it= vector(mode="numeric", length=nsvm)  #erreur moyenne de chaque iteration
 G.final=vector(length=length(P), mode="numeric")   #gradient de l energie
 
 j=1
 iter = 1
 iter.stop=0
 
-while(iter <= niteration)
+while(iter <= nsvm)
 {
 # Call the function in all the children, and collect the results
 if(weight==T) {res.slaves <-svmslaveWeight(xprim, yprim,P=P, lw=mtry, vectWeight=classWeight[,boot], trainsample=mat.train[,boot])}  else {res.slaves <-svmslave(xprim, yprim,P=P, lw=mtry, trainsample=mat.train[,boot])}
@@ -188,14 +190,14 @@ if(do.trace){
 if (iter==(j*do.trace))
 {
 if (j==1) {l1=which(P>=(sort(P, decreasing=T)[nstable]))} else{l2=which(P>=(sort(P, decreasing=T)[nstable]))}
-if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=niteration;} else {l1=l2}}
+if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=nsvm;} else {l1=l2}}
 j=j+1
 } 
 }
 
 iter=iter+1
 
-}  #fin boucle niteration#if(iter.stop != 0) {cat("iteration max",iter.stop,"\n")} else {cat("iteration max",niteration,"\n")}
+}  #fin boucle nsvm#if(iter.stop != 0) {cat("iteration max",iter.stop,"\n")} else {cat("iteration max",nsvm,"\n")}
 
 matrice.P[,boot]=P
 
@@ -209,7 +211,7 @@ matrice.P[,boot]=P
 	           nclass=nlevels(y),
                    nvariable=nvariable,
                    weight.learn=weight,
-		   niteration=niteration,
+		   nsvm=nsvm,
 		   Bsample=Bsample,
 		   #mtry=mtry,
   		   matTrain=mat.train,
