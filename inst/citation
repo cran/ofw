@@ -1,0 +1,18 @@
+citHeader("To cite randomForest in publications use:")
+
+citEntry(entry="Article",
+         title = "Le Paquet R à Kim-Ahn",
+         author = personList(person(last="chabrier", first="Patrick"),
+	                     person(last="Lê Cao", first="Kim-Ahn")),
+	 journal = "Les Inrock",
+         year         = "2006",
+         volume       = "3",
+         number       = "1",
+         pages        = "18-22",
+         
+         textVersion = 
+         paste("A. Liaw and M. Wiener (2006). ", 
+               "Classification and Regression by randomForest. ",
+               "R News 2(3), 18--22.",
+               sep=""))
+ 

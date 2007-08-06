@@ -1,0 +1,78 @@
+#
+# Copyright (C) 2007 Kim-Anh Lê Cao, Patrick Chabrier, INRA,
+# French National Institute for Agricultural Research.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+"learn.default"<-
+   function(x, 
+	    y,
+	    type="CART",
+	    ntree= if(type=="CART") 50 else NULL, 
+	    nforest= if(type=="CART") 100 else NULL,
+	    niteration= if(type=="SVM") 20000 else NULL,
+            mtry=5, 
+	    do.trace=FALSE,
+            nstable=50,
+            weight=FALSE,
+            Bsample=5, ...) {
+#pour cart:
+#function(x, y, ntree=50,  nforest=10, mtry=5, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5)
+if (type=="CART"){
+
+#faire des warnings
+
+	learn.cart=learnCART(x, y, ntree=ntree,  nforest=nforest, mtry=mtry, do.trace=do.trace, nstable=nstable, weight=weight, Bsample=Bsample)
+
+
+	out <-list(x=x,
+                   y=y,
+                   type=type,
+                   nsample=learn.cart$nsample,
+	           nclass=nlevels(y),
+                   nvariable=learn.cart$nvariable,
+                   weight.learn=weight,
+		   Bsample=Bsample,
+  		   matTrain=learn.cart$matTrain,
+		   matProb=learn.cart$matProb,
+		   weightingOption= if (!weight) NULL else {list(classWeight=learn.cart$weightingOption$classWeight, sampleWeight=learn.cart$weightingOption$sampleWeight) })
+}
+            
+#pour svm:
+#function(x, y, niteration=1000, mtry=10, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5)
+if (type=="SVM"){
+
+	learn.svm=learnSVM(x, y, niteration=niteration, mtry=mtry, do.trace=do.trace, nstable=nstable, weight=weight, Bsample=Bsample)
+
+	out <-list(x=x,
+                   y=y,
+                   type=type,
+                   nsample=learn.svm$nsample,
+	           nclass=nlevels(y),
+                   nvariable=learn.svm$nvariable,
+                   weight.learn=weight,
+		   niteration=learn.svm$niteration,
+		   Bsample=Bsample,
+  		   matTrain=learn.svm$matTrain,
+		   matProb=learn.svm$matProb, 
+		   weightingOption= if (!weight) NULL else {list(classWeight=learn.svm$weightingOption$classWeight, sampleWeight=learn.svm$weightingOption$sampleWeight) })
+}
+
+  
+
+        class(out) <- "learn"
+        return(out)
+
+}

@@ -1,0 +1,23 @@
+useDynLib(ofw)
+
+export(getTree,ofwCART ,ofwSVM, learnCART,  learnSVM,  evaluateCARTparallel, ofwTune, learn, ofw)
+
+S3method(evaluate, learn)
+S3method(learn, default)
+
+S3method(ofw, default)
+S3method(print, ofw)
+
+S3method(ofwTune, default)
+S3method(print, ofwTune)
+
+S3method(evaluateCART, learnCART)
+S3method(learnCART, default)
+
+S3method(evaluateSVM, learnSVM)
+S3method(learnSVM, default)
+
+S3method(ofwCART, default)
+
+S3method(ofwSVM, default)
+
