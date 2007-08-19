@@ -30,8 +30,6 @@
 	     weight=FALSE,
 	      ...) {
 
-
-
 nsample=nrow(x)
 nvariable=ncol(x)
 
@@ -41,87 +39,22 @@ if (length(unique(y)) < 2) stop("Need at least two classes to do classification.
 ## Make sure mtry is in reasonable range.
 if (mtry < 1 || mtry > nvariable) warning("invalid mtry: reset to within valid range")
 
-
 if (length(y) != nsample) stop("length of response must be the same as predictors")
 
 ## Check for NAs.
 if (any(is.na(x))) stop("NA not permitted in predictors")
 if (any(is.na(y))) stop("NA not permitted in response")
 
-## Check for empty classes:
+## Check for empty classes or small classes:
 if (any(table(y) == 0)) stop("Can't have empty classes in y.")
+#if (any(table(y) == 2)) stop("Can't have less than 3 cases per class in y.")
 
-################FONCTIONS ######
-
-simplexe=function(P)
-{
-#1 Projeter sur l'hyperplan Hf si P n'appartient pas a Hf
-somme=sum(P)
-lambda=(somme-1)/length(P)
-P=P-lambda  #projection sur Hf
-#2Projeter sur le simplexe les elements de P <0
-Sf= 1		#pas sur le simplexe (valeur arbitraire !=0)
-while(Sf!=0)
-{
-Sf=0
-J=sum(P<=0)          #nb d'elements de P <=0
-somme=sum(P[P>0])    #somme des elements de P >0
-P[P<=0]=0            #on met les proba negatives a zero
-P[P>0]=P[P>0] + (1-somme)/(length(P) - J)   #projection surle simplexe
-Sf=sum(P<0)    #y a t il encore des elements hors du simplexe ?
-}
-return(P)
-}
-######################## SVMLEARN ###################################
-#la fonction treeslave calcule l erreur oob moyenne de bmax arbres avec lw variables tirees selon la loi P:
-svmlearn=function(x, y,lw, P) 
-{
-G=vector(length=length(P))
-W=sample(nvariable, size=lw, prob=P, replace=F) #tirer W selon la proba P
-
-cont=T
-while (cont==T){
-train=sample(1: nsample, nsample, replace=T)
-if ((any(table(y[train]) == 0))|| (any(table(y[setdiff(1:nsample, train)]) == 0))) {cont=T} else {cont=F}
-}
-
-test = setdiff(1:nsample, train)                 #echantillon oob     
-data.train = x[train,W]       
-data.test=x[test,W]
-svm.train=svm(data.train, y[train], kernel="linear")
-mat=table(y[test],predict(svm.train, data.test))
-erreur= (length(test) - sum(diag(mat)))/length(test)
-G[W]= G[W] +erreur/(1000*P[W])  
-return(list(G,erreur))
-}
-
-###########################  SVMLEARNWEIGHT  ######################################
-svmlearnWeight=function(x, y,lw, P, vectWeight) 
-{
-G=vector(length=length(P), mode="numeric")
-W=sample(nvariable, size=lw, prob=P, replace=F)     #tirer W selon la proba P
-
-cont=T
-while (cont==T){
-train=sample(1: nsample, nsample, replace=T)
-if ((any(table(y[train]) == 0))|| (any(table(y[setdiff(1:nsample, train)]) == 0))) {cont=T} else {cont=F}
-}
-
-test = setdiff(1:nsample, train)                 #echantillon oob     
-data.train = x[train,W]       
-data.test=x[test,W]
-svm.train=svm(data.train, y[train], kernel="linear")
-mat=table(y[test],predict(svm.train, data.test))
-erreur=sum((apply(mat, 1, sum) -diag(mat))*classWeight)/sum(apply(mat, 1, sum)*classWeight)
-G[W]= G[W] +erreur/(1000*P[W])  
-return(list(G,erreur))
-}
-
+x = as.data.frame(x)
 
 
 ##########################  MAIN   ####################################
 #compute the weights for each sample
-if(weight==T){
+if(weight==TRUE){
 	#declarations
 	numWeight=vector(length=nlevels(y))
 	classWeight=vector(length=nlevels(y))
@@ -129,8 +62,6 @@ if(weight==T){
 
 	numWeight=summary(y)
 	classWeight=1/(numWeight * nlevels(y))                    
-	#classWeight=nsample/numWeight
-	#classWeight=classWeight/sum(classWeight)
 	for(n in 1:nlevels(y)){
 	sampleWeight[which(as.integer(y)==n)]= classWeight[n]
 	}
@@ -149,29 +80,28 @@ iter.stop=0
 
 while(iter <=nsvm)
 {
-# Call the function in all the children, and collect the results
-if(weight==T){res.svm<-svmlearnWeight(x=x, y=y,P=P, lw=mtry, vectWeight=classWeight)} else {res.svm<-svmlearn(x=x, y=y,P=P, lw=mtry)}
+#learn the svm on a bootstrap sample
+res.svm<-svmlearn(x=x, y=y,P=P, lw=mtry, nsample = nsample, nvariable = nvariable, vectWeight = classWeight, weight = weight)
 
-#on recupere le gradient G 
+#get the gradient G
 G.final=res.svm[[1]]
 
-#on recup l erreur 
+#and the OOB error rate
 erreur.it[iter]=res.svm[[2]]
 
+P=P - G.final/(1+iter)               #gradient descent  
+P=simplexe(P)                        #projection on the simplex
 
-P=P - G.final/(1+iter)               #descente de gradient  
-P=simplexe(P)                        #projection sur le simplexe 
-
+# in case of early stopping criterion
 if(do.trace){
 if (iter==(j*do.trace))
-{
-
-if (j==1) {l1=names(sort(P, decreasing=T)[1:nstable])} else{l2=names(sort(P, decreasing=T)[1:nstable])}
-cat("\n", "iteration", iter, "     " )
-if (j >1) cat("stable variables: ", length(intersect(l1, l2)), " ")
-if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=nsvm;} else {l1=l2}}
-j=j+1
-} 
+	{
+		if (j==1) {l1=names(sort(P, decreasing=T)[1:nstable])} else{l2=names(sort(P, decreasing=T)[1:nstable])}
+		cat("\n", "iteration", iter, "     " )
+		if (j >1) cat("stable variables: ", length(intersect(l1, l2)), " ")
+		if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=nsvm;} else {l1=l2}}
+		j=j+1
+	} 
 }
 
 iter=iter+1
@@ -193,7 +123,8 @@ out <- list(
 		do.trace=do.trace,
 		nstable=nstable,
 		weight=weight,
-		weightingOption= if (!weight) NULL else {list(classWeight=classWeight, sampleWeight=sampleWeight) }
+		classWeight= if (!weight) NULL else classWeight, 
+		sampleWeight=  if (!weight) NULL else sampleWeight
                 )
                    
 

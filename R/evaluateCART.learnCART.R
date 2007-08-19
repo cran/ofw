@@ -47,7 +47,7 @@
     classWeight=matrix(nrow=nlevels(y),ncol=Bsample)
     sampleWeight=matrix(nrow=nrow(x),ncol=Bsample)
 
-    if(obj$weight.learn==T  && weight==T){
+    if(obj$weight==T  && weight==T){
     sampleWeight=obj$weightingOption$sampleWeight  #if obj has been weighted
     classWeight=obj$weightingOption$classWeight 
     }	
@@ -57,7 +57,7 @@
      if(nvar >=nvariable) stop("nvar shoud not be greater than the number of variables")
 
     ##compute the weights (if needed) for each sample
-    if(weight==T && obj$weight.learn==F){
+    if(weight==T && obj$weight==F){
 	for(boot in 1:Bsample){
 		numWeight[,boot]=summary(y[obj$matTrain[,boot]])
 		classWeight[,boot]=nsample/numWeight[,boot]

@@ -44,7 +44,7 @@
 		rownames(iter.max)=c("ofwCART1", "ofwCART2")
 		for(i in 1:length(mtry.test)){
 		mtry=mtry.test[i]
-		cat("Computing ofwCART1 and ofwCART2 for mtry=", mtry, "\n",sep="")
+		cat("Computing ofwCART1 and ofwCART2 for mtry=", mtry, ": \n",sep="")
 		cat("ofwCART1", "\n")
 		ofwCART1=ofwCART(x, y, ntree=ntree, nforest=nforest, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[1,i]=ofwCART1$maxiter
@@ -60,7 +60,7 @@
 		rownames(iter.max)=c("ofwSVM1", "ofwSVM2")
 		for(i in 1:length(mtry.test)){
 		mtry=mtry.test[i]
-		cat("Computing ofwSVM1 and ofwSVM2 for mtry=", mtry, "\n",sep="")
+		cat("Computing ofwSVM1 and ofwSVM2 for mtry=", mtry, ": \n",sep="")
 		cat("ofwSVM1", "\n")
 		ofwSVM1=ofwSVM(x, y, nsvm=nsvm, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[1,i]=ofwSVM1$maxiter

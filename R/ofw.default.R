@@ -47,7 +47,8 @@ if (type=="CART"){
         	    type=type,
                     classes = levels(y),
 	            mean.error=ofw.cart$mean.error,
-		    prob=ofw.cart$prob,      
+		    prob=ofw.cart$prob,
+		    list = sort(ofw.cart$prob, decreasing=TRUE),      
 		    ntree = ntree,
 		    nforest=nforest,
 		    maxiter=ofw.cart$maxiter, 
@@ -55,8 +56,9 @@ if (type=="CART"){
 	            do.trace=do.trace,
 		    nstable=nstable,
 		    weight=weight,
-		    weightingOption= if (!weight) NULL else {list(classWeight=ofw.cart$weightingOption$classWeight, sampleWeight=ofw.cart$weightingOption$sampleWeight) },
-                    forest = ofw.cart$forest,
+		    classWeight= if (!weight) NULL else ofw.cart$classWeight, 
+		    sampleWeight=  if (!weight) NULL else ofw.cart$sampleWeight,		
+		    forest = ofw.cart$forest,
                     inbag = ofw.cart$inbag)
 }
             
@@ -74,14 +76,16 @@ if (type=="SVM"){
 		type=type,
 		classes = levels(y),
 	    	prob=ofw.svm$prob,
+	    	list = sort(ofw.svm$prob, decreasing=TRUE),   
 		nsvm=nsvm,
 		maxiter=ofw.svm$maxiter, 
 		mtry = mtry,
 		do.trace=do.trace,
 		nstable=nstable,
 		weight=weight,
-		weightingOption= if (!weight) NULL else {list(classWeight=ofw.svm$weightingOption$classWeight, sampleWeight=ofw.svm$weightingOption$sampleWeight) }
-                )
+		classWeight= if (!weight) NULL else ofw.svm$classWeight, 
+		sampleWeight=  if (!weight) NULL else ofw.svm$sampleWeight
+		)
 }
 	class(out) <- "ofw"
         return(out)

@@ -177,8 +177,8 @@ void classAgregTree(double *x,
     //loop for Nforests
     for (n = 1; n <=Nforest ; n++)
       {
-	if(n%trace ==0) printf("iteration \%5d \n",n);
-	if ((trace ==0) && (n==Nforest))  printf("iteration \%5d \n",n);
+	if(n%trace ==0) printf(" iteration \%5d ",n);
+	if ((trace ==0) && (n==Nforest))  printf(" iteration \%5d ",n);
 	
 	classForest(p_m_x, 
 		    dimx, 
@@ -275,12 +275,15 @@ void classAgregTree(double *x,
 	    *maxiter=n;
 	    n=Nforest;
 	  }
-	  printf("  stable variables:  \%5d \n",K);
+	  printf(" stable variables: \%5d ",K); 
+	  printf(" \n");
 	  
 	  for (i=0; i<mdim; i++) index1[i]=index2[i];
 	}
+	
 		
       }  //fin Nforest
+      printf("\n");
       //printf("iteration \%5d \n",n-1);
 }  //fin classAgregTree
 

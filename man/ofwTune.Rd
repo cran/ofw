@@ -5,11 +5,13 @@
 
 \title{Tuning the parameters for ofwCART or ofwSVM}
 \description{
-  \code{ofwTune} helps to tune the main parameters: \code{mtry}, \code{nforest} and \code{ntree} for ofwCART or \code{mtry} and \code{nsvm} for ofwSVM.}
+  \code{ofwTune} helps to tune the main parameters: \code{mtry}, \code{nforest} and \code{ntree} for ofwCART or \code{mtry} and \code{nsvm} for ofwSVM.
 }
 
 \usage{
-\method{ofwTune}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 500 else NULL, mtry.test=seq(5,15,length=3), do.trace=FALSE, nstable=10, weight=FALSE, ...)
+\method{ofwTune}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, 
+	nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 500 else NULL, 
+	mtry.test=seq(5,15,length=3), do.trace=FALSE, nstable=10, weight=FALSE, ...)
 }
         
 \arguments{
@@ -27,7 +29,7 @@
 }
 
 \details{
-\code{ofwTune} consists in testing either ofwCART or ofwSVM with several variable subsets sizes in the given sequence \code{mtry.test}. For each \code{mtry}, the algorithm is performed twice and the function \code{ofwTune} outputs the intersection length of the first \code{nstable} variables selected with these 2 ofw. The value \code{mtry} to choose should be the one that gives the largest intersection. 
+\code{ofwTune} consists in testing either ofwCART or ofwSVM with several variable subsets sizes in the given sequence \code{mtry.test}. For each \code{mtry}, the algorithm is performed twice and the function \code{ofwTune} outputs the intersection length of the first \code{nstable} variables selected with these 2 \code{ofw}. The value \code{mtry} to choose should be the one that gives the largest intersection. 
 
 The total number of iteration to tune should then be 2 to 3 times the maximum iterations reached for the optimal \code{mtry}. 
 
@@ -46,12 +48,12 @@ A list with the following components:
 }
 
 \note{
-	The computation of \code{ofwTune} might be slow as it consists in launching ofw $2*$length(\code{mtry.Test}) with an early stoping criterion (\code{nstable})
+	The computation of \code{ofwTune} might be slow as it consists in launching ofw $2*$length(\code{mtry.Test}).% with an early stopping criterion (\code{nstable})
 
-	Usually, the optimal value of \code{mtry} should be the smallest that gives stable results.
-	\code{mtryTest} should not bt greater than \code{nstable}.
+	%Usually, the optimal value of \code{mtry} should be the smallest that gives stable results.
+	%\code{mtryTest} should not be greater than \code{nstable}.
 	
-	\code{ntree=150} seems to give a good compromise between stable results and computation time.
+	%\code{ntree=150} seems to give a good compromise between stable results and computation time.
 	
 }
 
@@ -60,8 +62,9 @@ A list with the following components:
   	L\^e Cao, K-A., Gon\c calves, O., Besse, P. and Gadat, S. (2007), \emph{Selection of biologically relevant genes with a wrapper stochastic algorithm} Statistical Applications in Genetics and Molecular Biology: Vol. 6: Iss.1, Article 29.
 }
 
-\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr} \newline
-	Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr} \newline}
+\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr}
+
+	Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr}}
 
 \seealso{\code{\link{ofw}}}
 

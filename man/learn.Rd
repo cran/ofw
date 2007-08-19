@@ -5,11 +5,14 @@
 
 \title{Learning ofw for error rate assessement}
 \description{
-  \code{learn} simply performs the learning step of ofw on several bootstrap samples in order to assess the error rate on the test observations (see \code{evaluate})}
+  \code{learn} simply performs the learning step of \code{ofw} on several bootstrap samples in order to assess the error rate on the test observations (see \code{evaluate})
 }
 
 \usage{
-\method{learn}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 20000 else NULL, mtry=5, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5, ...)
+\method{learn}{default}(x, y, type="CART", ntree= if(type=="CART") 50 else NULL, 
+	nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 
+	20000 else NULL, mtry=5, do.trace=FALSE, nstable=50, weight=FALSE, 
+	Bsample=5, ...)
 }
         
 \arguments{
@@ -24,7 +27,6 @@
   \item{nstable}{Need \code{do.trace} set to some integer. Stopping criterion before \code{nforest} iterations are reached: if the \code{nstable} first weighted variables are the same after \code{do.stable} iterations, then stop. }
   \item{weight}{Should the weighting procedure be applied ?}
   \item{Bsample}{Number of bootstrap samples for the learning step.}
-  
   \item{...}{not used currently.}
 }
 
@@ -39,14 +41,12 @@
   \item{type}{Classifier used: either \code{CART} or \code{SVM}}
   \item{nsample}{Total number of samples}
   \item{nclass}{Number of levels of \code{y} (number of classes)}
-  \item{weight.learn}{If \code{TRUE} the weighted procedure was performed during the learning.}
+  \item{weight}{If \code{TRUE} the weighted procedure was performed during the learning.}
   \item{Bsample}{Number of bootstrap samples on which ofwCART is learnt.}
   \item{matTrain}{A \code{n} by \code{Bsample} matrix indicating the training samples in each bootstrap sample.}
   \item{matProb}{A \code{nvariable} by \code{Bsample} matrix for each probability distribution learnt.}
-  \item{weightingOption}{if \code{weight==T} : \newline
-  	-classWeight: a \code{nclass} by \code{Bsample} matrix indicating classes weights of each bootstrap sample.\newline
-  	-sampleWeight: a \code{nsample} by \code{Bsample} matrix indicating each sample weight in each bootstrap sample.
- 	}
+  \item{classWeight}{If \code{weight = TRUE} class weight vector.}
+  \item{sampleWeight}{If \code{weight = TRUE} sample weight vector.}
 }
 
 \note{
@@ -59,10 +59,11 @@
 \references{
 	
   	L\^e Cao, K-A., Gon\c calves, O., Besse, P. and Gadat, S. (2007), \emph{Selection of biologically relevant genes with a wrapper stochastic algorithm} Statistical Applications in Genetics and Molecular Biology: Vol. 6: Iss.1, Article 29.
-  	L\^e Cao, K-A., Bonnet, A., and Gadat, S., \emph{Multiclass classification  and gene selection with a stochastic algorithm}  \url{htp://www.lsp.ups-tlse.fr/}, Publication LSP\_2007\_02.
+  	L\^e Cao, K-A., Bonnet, A., and Gadat, S., \emph{Multiclass classification  and gene selection with a stochastic algorithm}  \url{http://www.lsp.ups-tlse.fr/Recherche/Publications/2007/cao05.html}.
 }
 
-\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr}\newline
+\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr}
+
 Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr}}
 
 \seealso{\code{\link{evaluate.learn}}}

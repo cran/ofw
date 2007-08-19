@@ -45,21 +45,19 @@
     classWeight=matrix(nrow=nlevels(y),ncol=Bsample)
     sampleWeight=matrix(nrow=nrow(x),ncol=Bsample)
 
-    if(obj$weight.learn==T  && weight==T){
-    sampleWeight=obj$weightingOption$sampleWeight  #if obj has been weighted
-    classWeight=obj$weightingOption$classWeight
+    if(obj$weight==T  && weight==T){
+    sampleWeight=obj$sampleWeight  #if obj has been weighted
+    classWeight=obj$classWeight
     }	
 
     #check input
     if(maxvar >=nvariable) stop("maxvar shoud not be greater than the number of variables")
 
     ##compute the weights (if needed) for each sample
-    if(weight==T && obj$weight.learn==F){
+    if(weight==T && obj$weight==F){
 	for(boot in 1:Bsample){
 		numWeight[,boot]=summary(y[obj$matTrain[,boot]])
 		classWeight[,boot]=1/(numWeight[,boot] * nlevels(y[obj$matTrain[,boot]]))    
-		#classWeight[,boot]=nsample/numWeight[,boot]
-		#classWeight[,boot]=classWeight[,boot]/sum(classWeight[,boot])
 		for(n in 1:nlevels(y)){
 		sampleWeight[which(as.integer(y[obj$matTrain[,boot]])==n),boot]= classWeight[n,boot]
 	}
@@ -67,24 +65,9 @@
 
     }
 	
-############################### EVAL ERREUR ############################################
-eval.erreur=function(x,y,train,test, P,ngene){
-	liste=as.numeric(names(sort(P, decreasing=T)[1:ngene]))
-	data.train=x[train,liste]     
-	data.test=x[test,liste]
-
-	##pour l'erreur de resubstitution
-	svm.train=svm(data.train, y[train],kernel="linear")
-	sample.pred.train[train]=predict(svm.train, data.train)
-	
-	##pour erreur interne oob
-	sample.pred.test[test]=predict(svm.train, data.test)
-	
-	return(list(sample.pred.train[train],sample.pred.test[test]))
-} #fin eval.erreur
-###############################   EVAL ERREUR WEIGHT    ################################
+###############################   EVAL ERREUR    ################################
 #evaluation de l erreur pour calculer e632+
-eval.erreur.weight=function(x,y,train,test, P,ngene, vect.w.train, vect.w.test){
+eval.erreur=function(x,y,train,test, P,ngene, vect.w.train=NULL, vect.w.test=NULL, weight){
 	liste=as.numeric(names(sort(P, decreasing=T)[1:ngene]))
 	data.train=x[train,liste]     
 	data.test=x[test,liste]
@@ -93,19 +76,22 @@ eval.erreur.weight=function(x,y,train,test, P,ngene, vect.w.train, vect.w.test){
 	##pour l'erreur de resubstitution
 	svm.train=svm(data.train, y[train],kernel="linear")
 	sample.pred.train[train]=predict(svm.train, data.train)
-	pred.train=predict(svm.train, data.train)
-	err.train = sum(vect.w.train[which(pred.train != y[train])])/sum(vect.w.train)  #c bien la somme?
-
+	if (weight==TRUE) {
+	err.train = sum(vect.w.train[which(sample.pred.train[train] != y[train])])/sum(vect.w.train)
+	} else {
+	err.train = length(which(sample.pred.train[train] != y[train]))/length(train)
+	}
 
 	##pour erreur interne oob
 	sample.pred.test[test]=predict(svm.train, data.test)
-	pred.test=predict(svm.train, data.test)
-	err.test = sum(vect.w.test[which(pred.test != y[test])])/sum(vect.w.test)
-
-
+	if (weight==TRUE) {
+	err.test = sum(vect.w.test[which(sample.pred.test[test] != y[test])])/sum(vect.w.test)
+	} else {
+	err.test = length(which(sample.pred.test[test] != y[test]))/length(test)
+	}
 
 	return(list(sample.pred.train[train],sample.pred.test[test], err.train, err.test))
-} #fin eval.erreur.weight
+} #fin eval.erreur
 
 ###########################################################################
 #pr l erreur .632+
@@ -119,70 +105,54 @@ error.boot=vector(length=maxvar)              #erreur e632+
 
 mat.pred.inbag=matrix(nrow=nsample, ncol=Bsample)
 mat.pred.test=matrix(nrow=nsample, ncol=Bsample)
-if (weight==T) {
-	err.inbag=vector(length=Bsample, mode="numeric")
-	err.test=vector(length=Bsample, mode="numeric")
-}
+err.inbag=vector(length=Bsample, mode="numeric")
+err.test=vector(length=Bsample, mode="numeric")
+
 
     ##BIG LOOP ON MAXvar
 cat("\n  Calculating e632+ for each of the ",maxvar," variables \n")
 for(ngene in 1:maxvar){
-cat("\n  variable :",ngene,"\n") 
+	cat("\n  variable :",ngene,"\n") 
 
     ##LOOP on the bootstrap samples
-for (boot in 1:Bsample)
-{
-#pr chaque echantillon bootstrap on travaille sur training et test set boot
+	for (boot in 1:Bsample)
+	{
+	#pr chaque echantillon bootstrap on travaille sur training et test set boot
 
-train.b = obj$matTrain[,boot]
-test.b = setdiff(1:nsample, train.b)
-P.b=obj$matProb[,boot]
-names(P.b)=c(1:nvariable)
-if (weight==T) {
-	vect.w.train=sampleWeight[train.b,boot]
-	vect.w.test=sampleWeight[test.b,boot]
-}
+	train.b = obj$matTrain[,boot]
+	test.b = setdiff(1:nsample, train.b)
+	P.b=obj$matProb[,boot]
+	names(P.b)=c(1:nvariable)
 
-
-### Call the function and collect the results
-if (weight==T) {
-	res.erreur=eval.erreur.weight(x=x, y=y,train=train.b, test=test.b, P=P.b,ngene=ngene,vect.w.train=vect.w.train, vect.w.test=vect.w.test)
+	### Call the function and collect the results
+	if (weight==T) {
+	res.erreur=eval.erreur(x=x, y=y,train=train.b, test=test.b, P=P.b,ngene=ngene,vect.w.train=sampleWeight[train.b,boot], vect.w.test=sampleWeight[test.b,boot], weight=weight)
 	} else {
-	res.erreur=eval.erreur(x=x, y=y,train=train.b, test=test.b, P=P.b,ngene=ngene)
-}
+	res.erreur=eval.erreur(x=x, y=y,train=train.b, test=test.b, P=P.b,ngene=ngene, weight=weight)
+	}
 
 mat.pred.inbag[train.b,boot]=res.erreur[[1]]
 mat.pred.test[test.b,boot]=res.erreur[[2]]
-if (weight==T) {
 err.inbag[boot]=res.erreur[[3]]
 err.test[boot]=res.erreur[[4]]
-}
 
 } #fin boucle boot
 
 	#ce code e632+ provient du code en R thorsten ds le package ipred ainsi que de Diaz ds package
 	#varSelRF. J ai verifie les fonctions c est ok
 
-# c est l erreur leave one out pr chaque ech bootstrap
-if (weight==T) { 
+	# erreur leave one out pr chaque ech bootstrap
 	one=mean(err.test, na.rm=T) 
-	} else { 
-	one <- mean(apply(cbind(mat.pred.test, as.numeric(y)), 1, function(x) {mean(x[-(Bsample + 1)] != x[Bsample + 1],na.rm = TRUE)}), na.rm = TRUE) 
-	}
 
-if(weight==T) {
 	resubst=mean(err.inbag, na.rm=T)
-	} else {
-	resubst <- mean(mat.pred.inbag != as.numeric(y), na.rm=T)
-	}
-
-err632 <- 0.368 * resubst + 0.632 * one
-gamma <-sum(outer(as.numeric(y),as.numeric(mat.pred.inbag),function(x, y) ifelse(x == y, 0, 1)),na.rm=T)/(length(y)^2)
 
 
-r <- (one - resubst)/(gamma - resubst)
-    r <- ifelse(one > resubst & gamma > resubst, r, 0)
-    if((r > 1) | (r < 0)) { ## just debugging; eliminar más adelante
+	err632 <- 0.368 * resubst + 0.632 * one
+	gamma <-sum(outer(as.numeric(y),as.numeric(mat.pred.inbag),function(x, y) ifelse(x == y, 0, 1)),na.rm=T)/(length(y)^2)
+
+	r <- (one - resubst)/(gamma - resubst)
+    	r <- ifelse(one > resubst & gamma > resubst, r, 0)
+    	if((r > 1) | (r < 0)) { ## just debugging;
         print(paste("r outside of 0, 1 bounds: one", one,
                     "resubst", resubst, "gamma", gamma))
         if(r > 1) {
@@ -193,7 +163,7 @@ r <- (one - resubst)/(gamma - resubst)
             r <- 0
             #print("setting r to 0")
         }
-    }
+    	}
     
     	errprime <- min(one, gamma)
     	err <- err632 + (errprime - resubst) *(0.368 * 0.632 * r)/(1 - 0.368 * r)
@@ -201,7 +171,6 @@ r <- (one - resubst)/(gamma - resubst)
 	error.boot[ngene]=err
 
 
-#print(error.boot[ngene])
 
 } #fin boucle erreur sur tous les ngene
 

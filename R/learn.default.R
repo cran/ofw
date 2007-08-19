@@ -45,12 +45,14 @@ if (type=="CART"){
                    nsample=learn.cart$nsample,
 	           nclass=nlevels(y),
                    nvariable=learn.cart$nvariable,
-                   weight.learn=weight,
-		   Bsample=Bsample,
+                   Bsample=Bsample,
   		   matTrain=learn.cart$matTrain,
 		   matProb=learn.cart$matProb,
-		   weightingOption= if (!weight) NULL else {list(classWeight=learn.cart$weightingOption$classWeight, sampleWeight=learn.cart$weightingOption$sampleWeight) })
-}
+		   weight=weight,
+		   classWeight= if (!weight) NULL else learn.cart$classWeight, 
+		   sampleWeight=  if (!weight) NULL else learn.cart$sampleWeight 
+		   )
+		   }
             
 #pour svm:
 #function(x, y, nsvm=1000, mtry=10, do.trace=FALSE, nstable=50, weight=FALSE, Bsample=5)
@@ -64,15 +66,16 @@ if (type=="SVM"){
                    nsample=learn.svm$nsample,
 	           nclass=nlevels(y),
                    nvariable=learn.svm$nvariable,
-                   weight.learn=weight,
-		   nsvm=learn.svm$nsvm,
+                   nsvm=learn.svm$nsvm,
 		   Bsample=Bsample,
   		   matTrain=learn.svm$matTrain,
-		   matProb=learn.svm$matProb, 
-		   weightingOption= if (!weight) NULL else {list(classWeight=learn.svm$weightingOption$classWeight, sampleWeight=learn.svm$weightingOption$sampleWeight) })
+		   matProb=learn.svm$matProb,
+		   weight=weight, 
+		   classWeight= if (!weight) NULL else learn.svm$classWeight, 
+		   sampleWeight=  if (!weight) NULL else learn.svm$sampleWeight 
+		   )
+		   
 }
-
-  
 
         class(out) <- "learn"
         return(out)

@@ -60,9 +60,11 @@
     if (any(is.na(y))) stop("NA not permitted in response")
 
     nclass <- length(levels(y))
-    ## Check for empty classes:
-        if (any(table(y) == 0)) stop("Can't have empty classes in y.")
-        
+	
+    ## Check for empty classes or small classes::
+    if (any(table(y) == 0)) stop("Can't have empty classes in y.")
+    #if (any(table(y) == 2)) stop("Can't have less than 3 cases per class in y.")
+
       moyenne <-double(nforest+1)   
       proba <-double(p)             
       maxiter=nforest
@@ -147,7 +149,9 @@
 	            do.trace=do.trace,
 		    nstable=nstable,
 		    weight=weight,
-		    weightingOption= if (!weight) NULL else {list(classWeight=classWeight, sampleWeight=sampleWeight) },
+		    classWeight= if(!weight) NULL else classWeight,
+		    sampleWeight= if(!weight) NULL else sampleWeight,
+		    ##weightingOption= if (!weight) NULL else {list(classWeight=classWeight, sampleWeight=sampleWeight) },
                     forest = if (!keep.forest) NULL else {
                         list(ndbigtree = rfout$ndbigtree, 
                              nodestatus = matrix(rfout$nodestatus,

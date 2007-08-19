@@ -60,8 +60,9 @@
 	if (any(is.na(x))) stop("NA not permitted in predictors")
 	if (any(is.na(y))) stop("NA not permitted in response")
 
-	## Check for empty classes:
+	## Check for empty classes or small classes::
 	if (any(table(y) == 0)) stop("Can't have empty classes in y.")
+	if (any(table(y) == 2)) stop("Can't have less than 3 cases per class in y for evaluation.")
 
 
 
@@ -101,11 +102,13 @@
                    nsample=nsample,
 	           nclass=nlevels(y),
                    nvariable=nvariable,
-                   weight.learn=weight,
-		   Bsample=Bsample,
+                   Bsample=Bsample,
   		   matTrain=mat.train,
 		   matProb=mat.prob,
-		   weightingOption= if (!weight) NULL else {list(classWeight=classWeight, sampleWeight=sampleWeight) })
+		   weight=weight,
+		   classWeight= if(!weight) NULL else classWeight,
+		   sampleWeight= if(!weight) NULL else sampleWeight)
+		   #weightingOption= if (!weight) NULL else {list(classWeight=classWeight, sampleWeight=sampleWeight) })
 
         class(out) <- "learnCART"
 

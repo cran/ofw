@@ -9,7 +9,9 @@
 }
 
 \usage{
-\method{evaluate}{learn}(obj, maxvar=15, type=obj$type, nvar=if(obj$type=="CART")  obj$nclass+1 else NULL, ntreeTest= if(obj$type=="CART") 100 else NULL, weight=FALSE,...)
+\method{evaluate}{learn}(obj, maxvar=15, type=obj$type, nvar=if(obj$type=="CART") 
+	obj$nclass+1 else NULL, ntreeTest= if(obj$type=="CART") 100 else NULL, 
+	weight=FALSE,...)
 }
 	    
 	   
@@ -25,7 +27,8 @@
 }
 
 \details{
-	In the case of data sets with a small number of samples (e.g microarray data), the use of e.632+ bootstrap error seems appropriate to assess the performance of the algorithm. With \code{CART}, as classification trees are unstable by nature, \code{ntreeTest} trees are aggregated. Furthermore, to avoid the wrong evaluation where the \code{ntreeTest} trees would be constructed only with the 'best' variables among the selected variables, \code{nvar} variables are randomly sampled in the evaluated selection to ensure a fair evaluation.
+	In the case of data sets with a small number of samples (e.g microarray data), the use of e.632+ bootstrap error seems appropriate to assess the performance of the algorithm. With \code{CART}, as classification trees are unstable by nature, \code{ntreeTest} trees are aggregated. 
+	%Furthermore, to avoid the wrong evaluation where the \code{ntreeTest} trees would be constructed only with the 'best' variables among the selected variables, \code{nvar} variables are randomly sampled in the evaluated selection to ensure a fair evaluation.
 	}
 	
 \value{

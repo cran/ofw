@@ -5,7 +5,7 @@
 
 \title{Error rate assessment of ofwCART}
 \description{
-	The error rate assessment e.632+ (Efron and Tibshirani, 1997) is performed on ofwCART. This second version of \code{evaluateCART} allows to perform the learning step independantly (for example with parallel computing).
+	The error rate assessment e.632+ (Efron and Tibshirani, 1997) is performed on ofwCART. This second version of \code{evaluateCART} allows to perform the learning step independently (for example with parallel computing).
 }
 
 \usage{
@@ -65,7 +65,8 @@ Statistical Association 92, 548-560.
   	L\^e Cao, K-A., Gon\c calves, O., Besse, P. and Gadat, S. (2007), \emph{Selection of biologically relevant genes with a wrapper stochastic algorithm} Statistical Applications in Genetics and Molecular Biology: Vol. 6: Iss.1, Article 29.
 }
 
-\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr} \newline
+\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr}
+
 Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr}.}
 
 \seealso{\code{evaluate}}

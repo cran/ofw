@@ -8,10 +8,13 @@
 
 \title{Optimal Feature Weighting with CART and SVM}
 \description{
-  \code{ofw} implements the Optimal Feature Weighting stochastic algorithm for multiclass classification with Classification And Regression Trees (CART) or Support Vector Machine (SVM) as a classifier, in the context of continuous variables.
+  \code{ofw} implements a meta algorithm called "Optimal Feature Weighting" for multiclass classification by aggergating either CART or SVM, in the context of continuous variables.
 }
 \usage{
-\method{ofw}{default}(x,y,type="CART", ntree= if(type=="CART") 50 else NULL, nforest= if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 100 else NULL, mtry=5, do.trace=FALSE, nstable=25, keep.inbag=if(type=="CART")  FALSE else NULL, keep.forest=if(type=="CART") TRUE else NULL, weight=FALSE, ...)
+\method{ofw}{default}(x,y,type="CART", ntree= if(type=="CART") 50 else NULL, nforest= 
+	if(type=="CART") 100 else NULL, nsvm= if(type=="SVM") 100 else NULL, mtry=5,
+	do.trace=FALSE, nstable=25, keep.inbag=if(type=="CART")  FALSE else NULL, 
+	keep.forest=if(type=="CART") TRUE else NULL, weight=FALSE, ...)
 \method{print}{ofw}(x, ...)
 }
         
@@ -32,7 +35,7 @@
   \item{...}{not used currently.}
 }
 
-\details{The Optimal Feature Weighting algorithm consists in learning the probability distribution P on all variables. The more useful the variables in the classification task, the heavier their weight. When the CART classifier is used, the trees are aggregated at each iteration (bagging).}
+\details{The Optimal Feature Weighting algorithm learns the probability distribution P on all variables. The more useful the variables in the classification task, the heavier their weight. When the CART classifier is used, the trees are aggregated for each iteration (bagging).}
                    
 \value{
   An object of class \code{ofw}, which is a list with the
@@ -43,6 +46,7 @@
   \item{classes}{Level attributes of the classes in the \code{y} predictor.}
   \item{mean.error}{Internal mean error rate vector of length \code{nforest}.}
   \item{prob}{Probability distribution vector P or weighting vector of length the total number of variables. }
+  \item{list}{Name of variables and their respective importance weight, sorted by decreasing order.}
   \item{ntree}{If \code{CART}, number of trees grown for each iteration.}
   \item{nforest}{If \code{CART}, number of iterations asked in the procedure.}
   \item{nsvm}{If \code{SVM}, number of iterations asked in the procedure.}
@@ -51,13 +55,11 @@
   \item{do.trace}{The number of iteration is printed every \code{do.trace} and the stopping criterion is tested.}
   \item{nstable}{Number of stable variables obtained if \code{maxiter < nforest}.}
   \item{weight}{If \code{TRUE} the weighted procedure was performed.}
-  \item{weightingOption}{If \code{weight==T} : \newline
-  	-classWeight: class weight vector.\newline
-  	-sampleWeight: sample weight vector.}
+  \item{classWeight}{If \code{weight = TRUE} class weight vector.}
+  \item{sampleWeight}{If \code{weight = TRUE} sample weight vector.}
   \item{forest}{If \code{CART}, a list that contains the entire last forest of the last iteration; \code{NULL} if \code{keep.forest=FALSE}.}
   \item{inbag}{If \code{keep.inbag=TRUE} a \code{n} by \code{ntree} matrix is returned with ``in-bag'' samples in which trees (and sampled how many times).}
-
-  	
+	
 }
 
 \note{
@@ -76,11 +78,13 @@
 	
   	L\^e Cao, K-A., Gon\c calves, O., Besse, P. and Gadat, S. (2007), \emph{Selection of biologically relevant genes with a wrapper stochastic algorithm} Statistical Applications in Genetics and Molecular Biology: Vol. 6: Iss.1, Article 29.
   	
-  	L\^e Cao, K-A., Bonnet, A., and Gadat, S., \emph{Multiclass classification  and gene selection with a stochastic algorithm}  \url{htp://www.lsp.ups-tlse.fr/}, Publication LSP\_2007\_02.
+  	L\^e Cao, K-A., Bonnet, A., and Gadat, S., \emph{Multiclass classification  and gene selection with a stochastic algorithm}  \url{http://www.lsp.ups-tlse.fr/Recherche/Publications/2007/cao05.html}.
 }
 
-\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr} \newline
-	Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr} \newline
+\author{Kim-Anh L\^e Cao \email{Kim-Anh.Le-Cao@toulouse.inra.fr}
+
+	Patrick Chabrier \email{Patrick.Chabrier@toulouse.inra.fr} 
+	
 	Based on Leo Breiman and Adele Cutler Fortran code and \code{randomForest} package for \code{ofwCART} version.}
 
 \seealso{\code{\link{getTree}}, \code{\link{learn}}, \code{\link{evaluate.learn}}}
@@ -89,25 +93,29 @@
 ## On data set "srbct"
 data(srbct)
 attach(srbct)
+
 ##ofwCART
 learn.cart <- ofw(srbct, as.factor(class),type="CART", ntree=100, nforest=200, mtry=5)
 print(learn.cart)
 ## Look at variable importance:
 learn.cart$prob
+## Look at the 10 most important variables:
+learn.cart$list[1:10]
 ## Look if the internal mean error is decreasing w.r.t the number of iterations:
 plot(learn.cart$mean.error, type="l")
+
 ##ofwSVM
 learn.svm <- ofw(srbct, as.factor(class),type="SVM", nsvm=500, mtry=5)
 print(learn.svm)
 ## Look at variable importance:
 learn.svm$prob
+## Look at the 10 most important variables:
+learn.svm$list[1:10]
 ## to use the do.trace options:
-#learn.cart <- ofw(srbct, as.factor(class),type="CART", ntree=100, nforest=200, mtry=5, do.trace=10, nstable=5)
+#learn.cart <- ofw(srbct, as.factor(class),type="CART", ntree=100, nforest=200, Mtry=5, do.trace=10, nstable=5)
 #learn.svm <- ofw(srbct, as.factor(class),type="SVM", nsvm=500, mtry=5, do.trace=50, nstable=5)
 #learn.cart
 #learn.svm
-
-
 detach(srbct)
 }
 \keyword{classif}% at least one, from doc/KEYWORDS
