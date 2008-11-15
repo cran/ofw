@@ -54,7 +54,7 @@ x = as.data.frame(x)
 
 ##########################  MAIN   ####################################
 #compute the weights for each sample
-if(weight==TRUE){
+if(weight){
 	#declarations
 	numWeight=vector(length=nlevels(y))
 	classWeight=vector(length=nlevels(y))
@@ -96,7 +96,7 @@ P=simplexe(P)                        #projection on the simplex
 if(do.trace){
 if (iter==(j*do.trace))
 	{
-		if (j==1) {l1=names(sort(P, decreasing=T)[1:nstable])} else{l2=names(sort(P, decreasing=T)[1:nstable])}
+		if (j==1) {l1=names(sort(P, decreasing=TRUE)[1:nstable])} else{l2=names(sort(P, decreasing=TRUE)[1:nstable])}
 		cat("\n", "iteration", iter, "     " )
 		if (j >1) cat("stable variables: ", length(intersect(l1, l2)), " ")
 		if (j>1) {if (length(intersect(l1, l2))==nstable) {iter.stop=iter;iter=nsvm;} else {l1=l2}}

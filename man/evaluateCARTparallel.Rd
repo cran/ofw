@@ -10,7 +10,7 @@
 
 \usage{
 evaluateCARTparallel(x, y, matTrain, matProb, maxvar=15, nvar=nlevels(y)+1,
-	 ntreeTest=100, weight=F)
+	 ntreeTest=100, weight=FALSE)
 }
 
 	   
@@ -43,7 +43,7 @@ evaluateCARTparallel(x, y, matTrain, matProb, maxvar=15, nvar=nlevels(y)+1,
   \item{matTrain}{A \code{nsample} by \code{Bsample} matrix indicating the training samples in each bootstrap sample.}
   \item{matProb}{A \code{nvariable} by \code{Bsample} matrix for each probability distribution learnt.}
   \item{error}{The evaluated e.632+ boostrap error as each variable enters the selection.}
-  \item{sampleWeight}{if \code{weight==T}, a \code{n} by \code{Bsample} matrix indicating each sample weight in each bootstrap sample.} 
+  \item{sampleWeight}{if \code{weight = TRUE}, a \code{n} by \code{Bsample} matrix indicating each sample weight in each bootstrap sample.} 
   \item{matPredInbag}{A \code{nvariable} by \code{Bsample} matrix indicating the prediction of the inbag samples.}
   \item{matPredTest}{A \code{nvariable} by \code{Bsample} matrix indicating the prediction of the test samples.}
 

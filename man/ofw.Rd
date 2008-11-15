@@ -58,7 +58,7 @@
   \item{classWeight}{If \code{weight = TRUE} class weight vector.}
   \item{sampleWeight}{If \code{weight = TRUE} sample weight vector.}
   \item{forest}{If \code{CART}, a list that contains the entire last forest of the last iteration; \code{NULL} if \code{keep.forest=FALSE}.}
-  \item{inbag}{If \code{keep.inbag=TRUE} a \code{n} by \code{ntree} matrix is returned with ``in-bag'' samples in which trees (and sampled how many times).}
+  \item{inbag}{If \code{keep.inbag = TRUE} a \code{n} by \code{ntree} matrix is returned with ``in-bag'' samples in which trees (and sampled how many times).}
 	
 }
 

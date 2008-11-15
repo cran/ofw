@@ -51,7 +51,7 @@
 		cat("ofwCART2","\n")
 		ofwCART2=ofwCART(x, y,  ntree=ntree, nforest=nforest, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[2,i]=ofwCART2$maxiter
-		l=length(intersect(names(sort(ofwCART1$prob, decreasing=T)[1:nstable]),names(sort(ofwCART2$prob, decreasing=T)[1:nstable])))
+		l=length(intersect(names(sort(ofwCART1$prob, decreasing=TRUE)[1:nstable]),names(sort(ofwCART2$prob, decreasing=TRUE)[1:nstable])))
 		param[,i]=c(mtry, l)
 		}
 	}
@@ -67,7 +67,7 @@
 		cat("ofwSVM2", "\n")
 		ofwSVM2=ofwSVM(x, y, nsvm=nsvm, mtry=mtry, nstable=nstable, do.trace=do.trace, weight=weight)
 		iter.max[2,i]=ofwSVM2$maxiter
-		l=length(intersect(names(sort(ofwSVM1$prob, decreasing=T)[1:nstable]),names(sort(ofwSVM2$prob, decreasing=T)[1:nstable])))
+		l=length(intersect(names(sort(ofwSVM1$prob, decreasing=TRUE)[1:nstable]),names(sort(ofwSVM2$prob, decreasing=TRUE)[1:nstable])))
 		param[,i]=c(mtry, l)
 		}
 	}

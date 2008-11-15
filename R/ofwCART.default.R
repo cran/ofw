@@ -38,7 +38,6 @@
 	if (classRF  && length(unique(y)) < 2)
         stop("Need at least two classes to do classification.")
         
-        ##if (do.trace==TRUE) do.trace=nforest
     if (!is.factor(y))
 	stop("y is not a factor!")
     n <- nrow(x)
@@ -119,7 +118,7 @@
 	names(rfout$proba)=colnames(t(x))
 	
 	#compute the weights for each sample for output
-	if(weight==T){
+	if(weight){
 	#declarations
 	numWeight=vector(length=nlevels(y))
 	classWeight=vector(length=nlevels(y))

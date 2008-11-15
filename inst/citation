@@ -1,18 +1,21 @@
-citHeader("To cite randomForest in publications use:")
+citHeader("To cite ofw in publications use:")
 
-citEntry(entry="Article",
-         title = "Le Paquet R à Kim-Ahn",
-         author = personList(person(last="chabrier", first="Patrick"),
-	                     person(last="Lê Cao", first="Kim-Ahn")),
-	 journal = "Les Inrock",
-         year         = "2006",
-         volume       = "3",
-         number       = "1",
-         pages        = "18-22",
-         
-         textVersion = 
-         paste("A. Liaw and M. Wiener (2006). ", 
-               "Classification and Regression by randomForest. ",
-               "R News 2(3), 18--22.",
-               sep=""))
- 
+citEntry(entry = "Article",
+  title        = "{ofw}: An {R} Package to Select Continuous Variables for 
+		  Multiclass Classification with a Stochastic Wrapper Method",
+  author       = personList(as.person("Kim-Anh L\\^e Cao"),
+                   as.person("Patrick Chabrier")),
+  journal      = "Journal of Statistical Software",
+  year         = "2008",
+  volume       = "28",
+  number       = "9",
+  pages        = "1--16",
+  url          = "http://www.jstatsoft.org/v28/i09/",
+
+  textVersion  =
+  paste("Kim-Anh Le Cao, Patrick Chabrier (2008).",
+        "ofw: An R Package to Select Continuous Variables for Multiclass Classification with a Stochastic Wrapper Method.",
+        "Journal of Statistical Software 28(9), 1-16.",
+        "URL http://www.jstatsoft.org/v28/i09/.")
+)
+

@@ -23,12 +23,12 @@
 svmlearn=function(x, y,lw, P, nvariable, nsample, weight, vectWeight = NULL)
 {
 	G=vector(length=length(P))
-	W=sample(nvariable, size=lw, prob=P, replace=F) #tirer W selon la proba P
+	W=sample(nvariable, size=lw, prob=P, replace=FALSE) #tirer W selon la proba P
 
-	cont=T
-	while (cont==T){
-		train=sample(1: nsample, nsample, replace=T)
-		if ((any(table(y[train]) == 0))|| (any(table(y[setdiff(1:nsample, train)]) == 0))) {cont=T} else {cont=F}
+	cont=TRUE
+	while (cont){
+		train=sample(1: nsample, nsample, replace=TRUE)
+		if ((any(table(y[train]) == 0))|| (any(table(y[setdiff(1:nsample, train)]) == 0))) {cont=TRUE} else {cont=FALSE}
 		}
 
 	test = setdiff(1:nsample, train)                 #echantillon oob     
@@ -36,7 +36,7 @@ svmlearn=function(x, y,lw, P, nvariable, nsample, weight, vectWeight = NULL)
 	data.test=x[test,W]
 	svm.train=svm(data.train, y[train], kernel="linear")
 	mat=table(y[test],predict(svm.train, data.test))
-	if (weight == TRUE) {erreur=sum((apply(mat, 1, sum) -diag(mat))*vectWeight)/sum(apply(mat, 1, sum)*vectWeight)} else {erreur= (length(test) - sum(diag(mat)))/length(test)}
+	if (weight) {erreur=sum((apply(mat, 1, sum) -diag(mat))*vectWeight)/sum(apply(mat, 1, sum)*vectWeight)} else {erreur= (length(test) - sum(diag(mat)))/length(test)}
 	G[W]= G[W] +erreur/(1000*P[W])  
 	return(list(G,erreur))
 }

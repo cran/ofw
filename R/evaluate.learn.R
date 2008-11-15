@@ -52,9 +52,6 @@ if (type=="CART"){
 	)
 }
             
-#pour svm:
-#function(obj, maxvar=15, weight=F)
-
 if (type=="SVM"){
 
 	eval.svm=evaluateSVM.learnSVM(obj, maxvar=maxvar, nvar=nvar, weight=weight)

@@ -21,7 +21,7 @@
 "evaluateSVM.learnSVM"<-
   function(obj,
            maxvar=15,
-           weight=F,
+           weight=FALSE,
 	   ...) {
     
     x=obj$x
@@ -45,7 +45,7 @@
     classWeight=matrix(nrow=nlevels(y),ncol=Bsample)
     sampleWeight=matrix(nrow=nrow(x),ncol=Bsample)
 
-    if(obj$weight==T  && weight==T){
+    if(obj$weight && weight){
     sampleWeight=obj$sampleWeight  #if obj has been weighted
     classWeight=obj$classWeight
     }	
@@ -54,7 +54,7 @@
     if(maxvar >=nvariable) stop("maxvar shoud not be greater than the number of variables")
 
     ##compute the weights (if needed) for each sample
-    if(weight==T && obj$weight==F){
+    if(weight && !obj$weight){
 	for(boot in 1:Bsample){
 		numWeight[,boot]=summary(y[obj$matTrain[,boot]])
 		classWeight[,boot]=1/(numWeight[,boot] * nlevels(y[obj$matTrain[,boot]]))    
@@ -68,7 +68,7 @@
 ###############################   EVAL ERREUR    ################################
 #evaluation de l erreur pour calculer e632+
 eval.erreur=function(x,y,train,test, P,ngene, vect.w.train=NULL, vect.w.test=NULL, weight){
-	liste=as.numeric(names(sort(P, decreasing=T)[1:ngene]))
+	liste=as.numeric(names(sort(P, decreasing=TRUE)[1:ngene]))
 	data.train=x[train,liste]     
 	data.test=x[test,liste]
 
@@ -76,7 +76,7 @@ eval.erreur=function(x,y,train,test, P,ngene, vect.w.train=NULL, vect.w.test=NUL
 	##pour l'erreur de resubstitution
 	svm.train=svm(data.train, y[train],kernel="linear")
 	sample.pred.train[train]=predict(svm.train, data.train)
-	if (weight==TRUE) {
+	if (weight) {
 	err.train = sum(vect.w.train[which(sample.pred.train[train] != y[train])])/sum(vect.w.train)
 	} else {
 	err.train = length(which(sample.pred.train[train] != y[train]))/length(train)
@@ -84,7 +84,7 @@ eval.erreur=function(x,y,train,test, P,ngene, vect.w.train=NULL, vect.w.test=NUL
 
 	##pour erreur interne oob
 	sample.pred.test[test]=predict(svm.train, data.test)
-	if (weight==TRUE) {
+	if (weight) {
 	err.test = sum(vect.w.test[which(sample.pred.test[test] != y[test])])/sum(vect.w.test)
 	} else {
 	err.test = length(which(sample.pred.test[test] != y[test]))/length(test)
@@ -125,7 +125,7 @@ for(ngene in 1:maxvar){
 	names(P.b)=c(1:nvariable)
 
 	### Call the function and collect the results
-	if (weight==T) {
+	if (weight) {
 	res.erreur=eval.erreur(x=x, y=y,train=train.b, test=test.b, P=P.b,ngene=ngene,vect.w.train=sampleWeight[train.b,boot], vect.w.test=sampleWeight[test.b,boot], weight=weight)
 	} else {
 	res.erreur=eval.erreur(x=x, y=y,train=train.b, test=test.b, P=P.b,ngene=ngene, weight=weight)
@@ -142,13 +142,13 @@ err.test[boot]=res.erreur[[4]]
 	#varSelRF. J ai verifie les fonctions c est ok
 
 	# erreur leave one out pr chaque ech bootstrap
-	one=mean(err.test, na.rm=T) 
+	one=mean(err.test, na.rm=TRUE) 
 
-	resubst=mean(err.inbag, na.rm=T)
+	resubst=mean(err.inbag, na.rm=TRUE)
 
 
 	err632 <- 0.368 * resubst + 0.632 * one
-	gamma <-sum(outer(as.numeric(y),as.numeric(mat.pred.inbag),function(x, y) ifelse(x == y, 0, 1)),na.rm=T)/(length(y)^2)
+	gamma <-sum(outer(as.numeric(y),as.numeric(mat.pred.inbag),function(x, y) ifelse(x == y, 0, 1)),na.rm=TRUE)/(length(y)^2)
 
 	r <- (one - resubst)/(gamma - resubst)
     	r <- ifelse(one > resubst & gamma > resubst, r, 0)

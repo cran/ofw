@@ -54,7 +54,7 @@ if (any(table(y) == 2)) stop("Can't have less than 3 cases per class in y for ev
 ##########################  MAIN   ####################################
 
 #for the weights if needed
-if(weight==T){  
+if(weight){  
 	classWeight=matrix(nrow=nlevels(y), ncol=Bsample)
 	sampleWeight=matrix(nrow=nsample,ncol=Bsample)
 	}
@@ -67,10 +67,10 @@ matrice.P=matrix(nrow=nvariable, ncol=Bsample)
 	for (boot in 1:Bsample)
 	{
 	#in case one sample is empty in the bootstrap:
-	cont=T
-	while (cont==T){
-		train=sample(1:nsample, nsample, replace=T)
-		if (any(table(y[train]) < 2)) {cont=T} else {cont=F}
+	cont=TRUE
+	while (cont){
+		train=sample(1:nsample, nsample, replace=TRUE)
+		if (any(table(y[train]) < 2)) {cont=TRUE} else {cont=FALSE}
 		}
 	mat.train[,boot]=train
 	}#fin boot
@@ -88,7 +88,7 @@ boot.svm = ofwSVM( x = xprim, y = yprim, nsvm=nsvm, mtry=mtry, do.trace=do.trace
 
 matrice.P[,boot]=boot.svm$prob
 
-if (weight == TRUE) {
+if (weight) {
 	classWeight[,boot] = boot.svm$classWeight
 	sampleWeight[,boot]= boot.svm$sampleWeight
 	}

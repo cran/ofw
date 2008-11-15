@@ -37,7 +37,7 @@
 	mat.pred.test=matrix(nrow=nrow(x), ncol=Bsample)
 
 	#for the weights if needed
-	if(weight==T){
+	if(weight){
 	numWeight=matrix(nrow=nlevels(y), ncol=Bsample)
 	classWeight=matrix(nrow=nlevels(y),ncol=Bsample)
 	sampleWeight=matrix(nrow=nrow(x),ncol=Bsample)
@@ -70,10 +70,10 @@
 	for (boot in 1:Bsample)
 	{
 	##in case one sample is empty in the bootstrap:
-	cont=T
-	while (cont==T){
-	train=sample(1:nsample, nsample, replace=T)
-	if (any(table(y[train]) < min(table(y)))) {cont=T} else {cont=F}
+	cont=TRUE
+	while (cont){
+	train=sample(1:nsample, nsample, replace=TRUE)
+	if (any(table(y[train]) < min(table(y)))) {cont=TRUE} else {cont=FALSE}
 	}
  
 	mat.train[,boot]=train
@@ -84,7 +84,7 @@
 	mat.prob[,boot]=obj$prob
 
 	#compute the weights for each sample
-	if(weight==T){
+	if(weight){
 		numWeight[,boot]=summary(y[train])
 		classWeight[,boot]=nsample/numWeight[,boot]
 		classWeight[,boot]=classWeight[,boot]/sum(classWeight[,boot])

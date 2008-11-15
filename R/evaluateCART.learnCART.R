@@ -47,7 +47,7 @@
     classWeight=matrix(nrow=nlevels(y),ncol=Bsample)
     sampleWeight=matrix(nrow=nrow(x),ncol=Bsample)
 
-    if(obj$weight==T  && weight==T){
+    if(obj$weight  && weight){
     sampleWeight=obj$weightingOption$sampleWeight  #if obj has been weighted
     classWeight=obj$weightingOption$classWeight 
     }	
@@ -57,7 +57,7 @@
      if(nvar >=nvariable) stop("nvar shoud not be greater than the number of variables")
 
     ##compute the weights (if needed) for each sample
-    if(weight==T && obj$weight==F){
+    if(weight && !obj$weight){
 	for(boot in 1:Bsample){
 		numWeight[,boot]=summary(y[obj$matTrain[,boot]])
 		classWeight[,boot]=nsample/numWeight[,boot]
@@ -95,8 +95,7 @@
 	ytest=y[test]
 	ntest <- nrow(xtest)
         
-	#if (weight==T){ vectWeight=sampleWeight[,boot]}
-	if (weight==T){ vectWeight=classWeight[,boot]}	
+	if (weight){ vectWeight=classWeight[,boot]}	
         
                                         #choix fixe, voir plus tard majority vote wins here
 	cutoff <- rep(1 / nclass, nclass)
@@ -168,17 +167,17 @@
 
 #this e632+ code comes from the ipred package from Thorsten and from the varselRF package from Diaz
 
-	one=mean(err.test, na.rm=T)
+	one=mean(err.test, na.rm=TRUE)
 	#one <- mean(apply(cbind(mat.pred.test, as.numeric(y)), 1, function(x) {mean(x[-(Bsample + 1)] != x[Bsample + 1],na.rm = TRUE)}), na.rm = TRUE)
 	#cat("\n  one :",one,"\n") 
 
-	resubst=mean(err.inbag, na.rm=T)
+	resubst=mean(err.inbag, na.rm=TRUE)
 	#resubst <- mean(mat.pred.inbag != as.numeric(y), na.rm=T)
 	#cat("\n  resubst :",resubst,"\n") 
 
 	err632 <- 0.368 * resubst + 0.632 * one
 
-	gamma <-sum(outer(as.numeric(y),as.numeric(mat.pred.inbag),function(x, y) ifelse(x == y, 0, 1)),na.rm=T)/(length(y)^2)
+	gamma <-sum(outer(as.numeric(y),as.numeric(mat.pred.inbag),function(x, y) ifelse(x == y, 0, 1)),na.rm=TRUE)/(length(y)^2)
 	
 	r <- (one - resubst)/(gamma - resubst)
 	r <- ifelse(one > resubst & gamma > resubst, r, 0)
